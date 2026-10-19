@@ -1,9 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import { configurePWAOptions } from '../src/utils/config'
 
-// Ruling B (see ledger): the mock supplies `nuxt3_8: true` because config.ts gates the
-// appManifest glob on it, and under Nuxt 4 that gate is always open. Without it the
-// "appManifest enabled" case would characterize the gate-closed path instead.
+// Characterizes the appManifest glob. The old version gate is gone: under Nuxt 4
+// `experimental.appManifest` defaults to true, so the glob is driven by `appManifest` alone.
 function makeCtx(appManifest: boolean) {
   const options: any = { strategies: 'generateSW' }
   const nuxt: any = {
@@ -16,7 +15,7 @@ function makeCtx(appManifest: boolean) {
     },
     callHook: async () => {},
   }
-  return { ctx: { nuxt3_8: true, options, nuxt, publicDirFolder: '/tmp/public', resolver: {} } as any, options }
+  return { ctx: { options, nuxt, publicDirFolder: '/tmp/public', resolver: {} } as any, options }
 }
 
 describe('appManifest gate', () => {
