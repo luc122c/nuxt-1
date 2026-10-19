@@ -9,7 +9,7 @@ export function configurePWAOptions(
   ctx: NuxtPWAContext,
   nitroConfig: NitroConfig,
 ) {
-  const { nuxt3_8, options, nuxt } = ctx
+  const { options, nuxt } = ctx
   if (!options.outDir) {
     const publicDir = nitroConfig.output?.publicDir ?? nuxt.options.nitro?.output?.publicDir
     options.outDir = publicDir ? resolve(publicDir) : resolve(nuxt.options.buildDir, '../.output/public')
@@ -66,7 +66,7 @@ export function configurePWAOptions(
 
   // handle payload extraction
   if (nuxt.options.experimental.payloadExtraction) {
-    const enableGlobPatterns = nuxt.options.nitro.static || (nuxt.options as any)._generate /* TODO: remove in future */
+    const enableGlobPatterns = nuxt.options.nitro.static
       || (
         !!nitroConfig.prerender?.routes?.length
         || Object.values(nitroConfig.routeRules ?? {}).some(r => r.prerender)
@@ -98,7 +98,7 @@ export function configurePWAOptions(
 
   // handle Nuxt App Manifest
   let appManifestFolder: string | undefined
-  if (nuxt3_8 && nuxt.options.experimental.appManifest) {
+  if (nuxt.options.experimental.appManifest) {
     config.globPatterns = config.globPatterns ?? []
     appManifestFolder = `${buildAssetsDir}builds/`
     config.globPatterns.push(`${appManifestFolder}**/*.json`)
