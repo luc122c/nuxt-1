@@ -3,7 +3,6 @@ import process from 'node:process'
 import { describe, expect, it } from 'vitest'
 
 const build = process.env.TEST_BUILD === 'true'
-const nuxt3_13 = process.env.NUXT_ECOSYSTEM_CI === 'true'
 
 describe(`test-${build ? 'build' : 'generate'}`, () => {
   it('service worker is generated: ', () => {
@@ -17,17 +16,11 @@ describe(`test-${build ? 'build' : 'generate'}`, () => {
     expect(existsSync(webManifest), `${webManifest} doesn't exist`).toBeTruthy()
     const swContent = readFileSync(swName, 'utf-8')
     let match: RegExpMatchArray | null
-    // vite5/rollup4 inlining workbox-***.js in the sw.js
-    if (nuxt3_13) {
-      match = swContent.match(/define\(\["\.\/(workbox-\w+)"/)
-      expect(match, `workbox-***.js entry found in ${swName}`).toBeFalsy()
-    }
-    else {
-      match = swContent.match(/define\(\["\.\/(workbox-\w+)"/)
-      expect(match && match.length === 2, `workbox-***.js entry not found in ${swName}`).toBeTruthy()
-      const workboxName = `./playground/${build ? '.output/public' : 'dist'}/${match?.[1]}.js`
-      expect(existsSync(workboxName), `${workboxName} doesn't exist`).toBeTruthy()
-    }
+    // workbox is emitted as its own chunk and referenced from sw.js
+    match = swContent.match(/define\(\["\.\/(workbox-\w+)"/)
+    expect(match && match.length === 2, `workbox-***.js entry not found in ${swName}`).toBeTruthy()
+    const workboxName = `./playground/${build ? '.output/public' : 'dist'}/${match?.[1]}.js`
+    expect(existsSync(workboxName), `${workboxName} doesn't exist`).toBeTruthy()
     match = swContent.match(/url:\s*"manifest\.webmanifest"/)
     expect(match && match.length === 1, 'missing manifest.webmanifest in sw precache manifest').toBeTruthy()
     match = swContent.match(/url:\s*"\/"/)
