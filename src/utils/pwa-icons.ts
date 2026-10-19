@@ -67,11 +67,11 @@ export async function preparePWAIconTypes(
       apple: appleNames,
       appleSplashScreen: appleSplashScreenNames,
     }),
-    transparent: generatePwaImageType('PwaTransparentImage', ctx.nuxt4, transparentNames),
-    maskable: generatePwaImageType('PwaMaskableImage', ctx.nuxt4, maskableNames),
-    favicon: generatePwaImageType('PwaFaviconImage', ctx.nuxt4, faviconNames),
-    apple: generatePwaImageType('PwaAppleImage', ctx.nuxt4, appleNames),
-    appleSplashScreen: generatePwaImageType('PwaAppleSplashScreenImage', ctx.nuxt4, appleSplashScreenNames),
+    transparent: generatePwaImageType('PwaTransparentImage', transparentNames),
+    maskable: generatePwaImageType('PwaMaskableImage', maskableNames),
+    favicon: generatePwaImageType('PwaFaviconImage', faviconNames),
+    apple: generatePwaImageType('PwaAppleImage', appleNames),
+    appleSplashScreen: generatePwaImageType('PwaAppleSplashScreenImage', appleSplashScreenNames),
   } satisfies DtsInfo
 
   if (nuxt.options.dev && nuxt.options.ssr) {
@@ -109,8 +109,7 @@ async function resolvePWAAssetsOptions(ctx: NuxtPWAContext) {
   }
 
   // pwa plugin will use vite.root, and so, we need to always resolve the image relative to srcDir
-  // - Nuxt 3: srcDir === rootDir
-  // - Nuxt 3 v4 compat mode or Nuxt 4+: srcDir = <rootDir>/app vite.root set to srcDir
+  // Nuxt 4+: srcDir = <rootDir>/app, vite.root set to srcDir
   useImage = relative(nuxt.options.srcDir, useImage)
 
   // prepare

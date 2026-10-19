@@ -37,39 +37,26 @@ export async function registerPwaIconsTypes(
     from: resolver.resolve(runtimeDir, 'composables/index'),
   })))
 
-  // TODO: add `{ node: true, nuxt: true }` to addTypeTemplate when migrating to nuxt 4, rn doing it manually
-  const templates: string[] = []
-  const isNuxt4 = ctx.nuxt4
   const dtsContent = dts?.dts
   if (dtsContent) {
-    templates.push(addTypeTemplate({
+    addTypeTemplate({
       write: true,
       filename: 'pwa-icons/pwa-icons.d.ts',
       getContents: () => dtsContent,
-    }).dst)
+    }, { node: true })
   }
   else {
-    templates.push(addTypeTemplate({
+    addTypeTemplate({
       write: true,
       filename: 'pwa-icons/pwa-icons.d.ts',
       getContents: () => pwaIcons(),
-    }).dst)
+    }, { node: true })
   }
-  templates.push(addPwaTypeTemplate('PwaTransparentImage', isNuxt4, dts?.transparent))
-  templates.push(addPwaTypeTemplate('PwaMaskableImage', isNuxt4, dts?.maskable))
-  templates.push(addPwaTypeTemplate('PwaFaviconImage', isNuxt4, dts?.favicon))
-  templates.push(addPwaTypeTemplate('PwaAppleImage', isNuxt4, dts?.apple))
-  templates.push(addPwaTypeTemplate('PwaAppleSplashScreenImage', isNuxt4, dts?.appleSplashScreen))
-
-  // TODO: remove this once migrated
-  if (ctx.nuxt4) {
-    ctx.nuxt.hook('prepare:types', (context) => {
-      const nodeReferences = (context as any).nodeReferences
-      for (const path of templates) {
-        nodeReferences.push({ path })
-      }
-    })
-  }
+  addPwaTypeTemplate('PwaTransparentImage', dts?.transparent)
+  addPwaTypeTemplate('PwaMaskableImage', dts?.maskable)
+  addPwaTypeTemplate('PwaFaviconImage', dts?.favicon)
+  addPwaTypeTemplate('PwaAppleImage', dts?.apple)
+  addPwaTypeTemplate('PwaAppleSplashScreenImage', dts?.appleSplashScreen)
 
   return !!dts
 }
