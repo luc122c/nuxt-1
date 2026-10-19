@@ -26,14 +26,14 @@ export function addPwaTypeTemplate(
       write: true,
       filename: `pwa-icons/${filename}.d.ts`,
       getContents: () => content,
-    }, { node: true }).dst
+    }, { nuxt: true, node: true }).dst
   }
   else {
     return addTypeTemplate({
       write: true,
       getContents: () => generatePwaImageType(filename),
       filename: `pwa-icons/${filename}.d.ts`,
-    }, { node: true }).dst
+    }, { nuxt: true, node: true }).dst
   }
 }
 

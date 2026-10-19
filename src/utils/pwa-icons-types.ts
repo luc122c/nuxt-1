@@ -43,14 +43,14 @@ export async function registerPwaIconsTypes(
       write: true,
       filename: 'pwa-icons/pwa-icons.d.ts',
       getContents: () => dtsContent,
-    }, { node: true })
+    }, { nuxt: true, node: true })
   }
   else {
     addTypeTemplate({
       write: true,
       filename: 'pwa-icons/pwa-icons.d.ts',
       getContents: () => pwaIcons(),
-    }, { node: true })
+    }, { nuxt: true, node: true })
   }
   addPwaTypeTemplate('PwaTransparentImage', dts?.transparent)
   addPwaTypeTemplate('PwaMaskableImage', dts?.maskable)
