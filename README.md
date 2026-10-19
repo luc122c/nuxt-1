@@ -1,6 +1,6 @@
 <p align='center'>
-<img src='https://raw.githubusercontent.com/vite-pwa/nuxt/main/hero.png' alt="@vite-pwa/nuxt - Zero-config PWA for Nuxt 3"><br>
-Zero-config PWA Plugin for Nuxt 3
+<img src='https://raw.githubusercontent.com/vite-pwa/nuxt/main/hero.png' alt="@vite-pwa/nuxt - Zero-config PWA for Nuxt"><br>
+Zero-config PWA Plugin for Nuxt
 </p>
 
 <p align='center'>
@@ -39,15 +39,15 @@ Zero-config PWA Plugin for Nuxt 3
 - ⚙️ **Stale-while-revalidate**: automatic reload when new content is available
 - ✨ **Static assets handling**: configure static assets for offline support
 - 🐞 **Development Support**: debug your custom service worker logic as you develop your application
-- 🛠️ **Versatile**: integration with meta frameworks: [îles](https://github.com/ElMassimo/iles), [SvelteKit](https://github.com/sveltejs/kit), [VitePress](https://github.com/vuejs/vitepress), [Astro](https://github.com/withastro/astro), [Nuxt 3](https://github.com/nuxt/nuxt) and [Remix](https://github.com/remix-run/remix)
+- 🛠️ **Versatile**: integration with meta frameworks: [îles](https://github.com/ElMassimo/iles), [SvelteKit](https://github.com/sveltejs/kit), [VitePress](https://github.com/vuejs/vitepress), [Astro](https://github.com/withastro/astro), [Nuxt](https://github.com/nuxt/nuxt) and [Remix](https://github.com/remix-run/remix)
 - 💥 **PWA Assets Generator**: generate all the PWA assets from a single command and a single source image
 - 🚀 **PWA Assets Integration**: serving, generating and injecting PWA Assets on the fly in your application
 
 ## 📦 Install
 
-> From v0.4.0, `@vite-pwa/nuxt` requires Vite 5 and Nuxt 3.9.0+.
+> From v2.0.0, `@vite-pwa/nuxt` requires Vite 5 and Nuxt 4.0.0+.
 
-> For older versions, `@vite-pwa/nuxt` requires Vite 3.2.0+ and Nuxt 3.0.0+.
+> Nuxt 3 is no longer supported: use `@vite-pwa/nuxt@1`. See the [Nuxt release cycle](https://nuxt.com/docs/3.x/community/roadmap) for the Nuxt 3 end-of-life date.
 
 ```bash
 npx nuxi@latest module add @vite-pwa/nuxt
