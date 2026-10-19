@@ -7,7 +7,7 @@ const readme = readFileSync(new URL('../README.md', import.meta.url), 'utf-8')
 
 describe('nuxt 4 support', () => {
   it('declares a nuxt 4 floor in module meta', () => {
-    expect(moduleSource).toContain("nuxt: '>=4.0.0'")
+    expect(moduleSource).toContain('nuxt: \'>=4.0.0\'')
   })
 
   it('pins @nuxt/kit to v4', () => {
