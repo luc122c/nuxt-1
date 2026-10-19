@@ -11,7 +11,6 @@ import {
   addPlugin,
   createResolver,
   extendWebpackConfig,
-  getNuxtVersion,
   resolveAlias,
 } from '@nuxt/kit'
 import { VitePWA } from 'vite-plugin-pwa'
@@ -22,12 +21,9 @@ import { regeneratePWA, writeWebManifest } from './utils'
 
 export async function doSetup(options: PwaModuleOptions, nuxt: Nuxt) {
   const resolver = createResolver(import.meta.url)
-  const nuxtVersion = (getNuxtVersion(nuxt) as string).split('.').map(v => Number.parseInt(v))
-  const nuxt4 = nuxtVersion.length > 1 && nuxtVersion[0] >= 4
 
   const ctx: NuxtPWAContext = {
     nuxt,
-    nuxt4,
     resolver: createResolver(import.meta.url),
     options,
     publicDirFolder: resolveAlias('public'),
