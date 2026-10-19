@@ -23,17 +23,11 @@ import { regeneratePWA, writeWebManifest } from './utils'
 export async function doSetup(options: PwaModuleOptions, nuxt: Nuxt) {
   const resolver = createResolver(import.meta.url)
   const nuxtVersion = (getNuxtVersion(nuxt) as string).split('.').map(v => Number.parseInt(v))
-  const nuxt3_8 = nuxtVersion.length > 1 && (nuxtVersion[0] > 3 || (nuxtVersion[0] === 3 && nuxtVersion[1] >= 8))
   const nuxt4 = nuxtVersion.length > 1 && nuxtVersion[0] >= 4
-  const future = nuxt.options.future as any
 
   const ctx: NuxtPWAContext = {
     nuxt,
-    nuxt3_8,
     nuxt4,
-    // included at v3.12.0, then removed and included back again for v5 compatibility: we only need the layout to configure correctly the pwa assets image
-    // https://github.com/nuxt/nuxt/releases/tag/v3.12.0
-    nuxt4Compat: nuxt4 ? true : ('compatibilityVersion' in future && typeof future.compatibilityVersion === 'number') && future.compatibilityVersion >= 4,
     resolver: createResolver(import.meta.url),
     options,
     publicDirFolder: resolveAlias('public'),
@@ -78,78 +72,16 @@ export async function doSetup(options: PwaModuleOptions, nuxt: Nuxt) {
 
   addPWAIconsPluginTemplate(pwaAssetsEnabled)
 
-  if (ctx.nuxt4) {
-    await Promise.all([
-      addComponent({
-        name: 'VitePwaManifest',
-        filePath: resolver.resolve(runtimeDir, 'components/VitePwaManifest'),
-      }),
-      addComponent({
-        name: 'NuxtPwaManifest',
-        filePath: resolver.resolve(runtimeDir, 'components/VitePwaManifest'),
-      }),
-      addComponent({
-        name: 'NuxtPwaAssets',
-        filePath: resolver.resolve(runtimeDir, 'components/NuxtPwaAssets'),
-      }),
-      addComponent({
-        name: 'PwaAppleImage',
-        filePath: resolver.resolve(runtimeDir, 'components/nuxt4/PwaAppleImage'),
-      }),
-      addComponent({
-        name: 'PwaAppleSplashScreenImage',
-        filePath: resolver.resolve(runtimeDir, 'components/nuxt4/PwaAppleSplashScreenImage'),
-      }),
-      addComponent({
-        name: 'PwaFaviconImage',
-        filePath: resolver.resolve(runtimeDir, 'components/nuxt4/PwaFaviconImage'),
-      }),
-      addComponent({
-        name: 'PwaMaskableImage',
-        filePath: resolver.resolve(runtimeDir, 'components/nuxt4/PwaMaskableImage'),
-      }),
-      addComponent({
-        name: 'PwaTransparentImage',
-        filePath: resolver.resolve(runtimeDir, 'components/nuxt4/PwaTransparentImage'),
-      }),
-    ])
-  }
-  else {
-    await Promise.all([
-      addComponent({
-        name: 'VitePwaManifest',
-        filePath: resolver.resolve(runtimeDir, 'components/VitePwaManifest'),
-      }),
-      addComponent({
-        name: 'NuxtPwaManifest',
-        filePath: resolver.resolve(runtimeDir, 'components/VitePwaManifest'),
-      }),
-      addComponent({
-        name: 'NuxtPwaAssets',
-        filePath: resolver.resolve(runtimeDir, 'components/NuxtPwaAssets'),
-      }),
-      addComponent({
-        name: 'PwaAppleImage',
-        filePath: resolver.resolve(runtimeDir, 'components/PwaAppleImage.vue'),
-      }),
-      addComponent({
-        name: 'PwaAppleSplashScreenImage',
-        filePath: resolver.resolve(runtimeDir, 'components/PwaAppleSplashScreenImage.vue'),
-      }),
-      addComponent({
-        name: 'PwaFaviconImage',
-        filePath: resolver.resolve(runtimeDir, 'components/PwaFaviconImage.vue'),
-      }),
-      addComponent({
-        name: 'PwaMaskableImage',
-        filePath: resolver.resolve(runtimeDir, 'components/PwaMaskableImage.vue'),
-      }),
-      addComponent({
-        name: 'PwaTransparentImage',
-        filePath: resolver.resolve(runtimeDir, 'components/PwaTransparentImage.vue'),
-      }),
-    ])
-  }
+  await Promise.all([
+    addComponent({ name: 'VitePwaManifest', filePath: resolver.resolve(runtimeDir, 'components/VitePwaManifest') }),
+    addComponent({ name: 'NuxtPwaManifest', filePath: resolver.resolve(runtimeDir, 'components/VitePwaManifest') }),
+    addComponent({ name: 'NuxtPwaAssets', filePath: resolver.resolve(runtimeDir, 'components/NuxtPwaAssets') }),
+    addComponent({ name: 'PwaAppleImage', filePath: resolver.resolve(runtimeDir, 'components/PwaAppleImage') }),
+    addComponent({ name: 'PwaAppleSplashScreenImage', filePath: resolver.resolve(runtimeDir, 'components/PwaAppleSplashScreenImage') }),
+    addComponent({ name: 'PwaFaviconImage', filePath: resolver.resolve(runtimeDir, 'components/PwaFaviconImage') }),
+    addComponent({ name: 'PwaMaskableImage', filePath: resolver.resolve(runtimeDir, 'components/PwaMaskableImage') }),
+    addComponent({ name: 'PwaTransparentImage', filePath: resolver.resolve(runtimeDir, 'components/PwaTransparentImage') }),
+  ])
 
   nuxt.hook('prepare:types', ({ references }) => {
     references.push({ path: resolver.resolve(runtimeDir, 'plugins/types') })
@@ -358,34 +290,12 @@ export const periodicSyncForUpdates = ${typeof client.periodicSyncForUpdates ===
         }
       })
     }
-    if (nuxt3_8) {
-      nuxt.hook('nitro:build:public-assets', async () => {
-        await regeneratePWA(
-          options.outDir!,
-          pwaAssets,
-          resolveVitePluginPWAAPI(),
-        )
-      })
-    }
-    else {
-      nuxt.hook('nitro:init', (nitro) => {
-        nitro.hooks.hook('rollup:before', async () => {
-          await regeneratePWA(
-            options.outDir!,
-            pwaAssets,
-            resolveVitePluginPWAAPI(),
-          )
-        })
-      })
-      if (nuxt.options.nitro.static || (nuxt.options as any)._generate /* TODO: remove in future */) {
-        nuxt.hook('close', async () => {
-          await regeneratePWA(
-            options.outDir!,
-            pwaAssets,
-            resolveVitePluginPWAAPI(),
-          )
-        })
-      }
-    }
+    nuxt.hook('nitro:build:public-assets', async () => {
+      await regeneratePWA(
+        options.outDir!,
+        pwaAssets,
+        resolveVitePluginPWAAPI(),
+      )
+    })
   }
 }
