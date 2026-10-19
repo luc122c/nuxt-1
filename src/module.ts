@@ -41,7 +41,7 @@ export default defineNuxtModule<ModuleOptions>({
     name: '@vite-pwa/nuxt',
     configKey: 'pwa',
     compatibility: {
-      nuxt: '>=3.6.5',
+      nuxt: '>=4.0.0',
     },
     version,
   },
