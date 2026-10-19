@@ -1,4 +1,4 @@
-import { existsSync, readFileSync } from 'node:fs'
+import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 
 const pkg = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf-8'))
@@ -28,5 +28,18 @@ describe('nuxt 4 support', () => {
     expect(readme).not.toMatch(/for Nuxt 3/)
     expect(readme).not.toMatch(/Plugin for Nuxt 3/)
     expect(pkg.description).not.toMatch(/Nuxt 3/)
+  })
+
+  it('leaves no version-gate identifiers in the source', () => {
+    const source = readdirSync(new URL('../src', import.meta.url), { recursive: true })
+      .filter(file => file.endsWith('.ts'))
+      .map(file => readFileSync(new URL(`../src/${file}`, import.meta.url), 'utf-8'))
+      .join('\n')
+    expect(source).not.toMatch(/nuxt3_8|nuxt4Compat|isNuxt4|__VLS_/)
+  })
+
+  it('leaves no nuxt 3 .vue components', () => {
+    const components = readdirSync(new URL('../src/runtime/components', import.meta.url))
+    expect(components.filter(file => file.endsWith('.vue'))).toEqual([])
   })
 })
